@@ -1,0 +1,7 @@
+Manifest-Version: 1.0
+Main-Class: org.test.pulseox.PulseOxMonitorGui
+Class-Path: 
+ lib/jssc-2.8.0.jar,
+ lib/log4j-api-2.6.1.jar,
+ lib/log4j-core-2.6.1.jar,
+ lib/jchart2d-3.3.2.jar
