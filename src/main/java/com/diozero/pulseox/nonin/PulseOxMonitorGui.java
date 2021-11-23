@@ -1,15 +1,25 @@
 package com.diozero.pulseox.nonin;
 
-import java.awt.*;
+import java.awt.BorderLayout;
+import java.awt.Color;
+import java.awt.Component;
+import java.awt.Dimension;
 import java.awt.event.WindowAdapter;
 import java.awt.event.WindowEvent;
 
-import javax.swing.*;
+import javax.swing.Box;
+import javax.swing.BoxLayout;
+import javax.swing.JFrame;
+import javax.swing.JLabel;
+import javax.swing.JPanel;
 
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
-import com.diozero.pulseox.nonin.data.*;
+import com.diozero.pulseox.nonin.data.DataFormat2Frame;
+import com.diozero.pulseox.nonin.data.DataFormat2Packet;
+import com.diozero.pulseox.nonin.data.DataFormatType;
+import com.diozero.pulseox.nonin.data.NoninResponseInterface;
 import com.diozero.pulseox.nonin.io.Nonin9560PulseOxJssc;
 import com.diozero.pulseox.nonin.io.PulseOxMonitorInterface;
 
@@ -23,7 +33,7 @@ public class PulseOxMonitorGui extends JPanel implements PulseOxListenerInterfac
 	private static final long serialVersionUID = -67949939230864064L;
 	private static final Logger logger = LogManager.getLogger(PulseOxMonitorGui.class);
 	private static final DataFormatType DEFAULT_DATA_FORMAT = DataFormatType.DATA_FORMAT_02;
-	
+
 	public static void main(String[] args) {
 		// On Linux: /dev/rfcomm0
 		// On Windows: COMxx
@@ -33,17 +43,17 @@ public class PulseOxMonitorGui extends JPanel implements PulseOxListenerInterfac
 			System.exit(1);
 		}
 		serial_port = args[0];
-		
+
 		DataFormatType data_format;
 		if (args.length > 1) {
 			data_format = DataFormatType.forValue(Short.parseShort(args[1]));
 		} else {
 			data_format = DEFAULT_DATA_FORMAT;
 		}
-		
+
 		final PulseOxMonitorGui gui = new PulseOxMonitorGui(data_format, serial_port);
-		//gui.set
-		
+		// gui.set
+
 		JFrame frame = new JFrame("Heart Rate");
 		frame.setLayout(new BorderLayout());
 		frame.getContentPane().add(gui, BorderLayout.CENTER);
@@ -57,33 +67,34 @@ public class PulseOxMonitorGui extends JPanel implements PulseOxListenerInterfac
 			}
 		});
 		frame.setVisible(true);
-		
+
 		gui.start();
 	}
 
 	private PulseOxMonitorInterface pulseOxMonitor;
 
+	// TODO Switch to XChart - see the "Real-time Java Chart" example
 	private Chart2D spo2Chart;
 	private ITrace2D spo2Trace;
 	private int spo2Point;
 	private JLabel spo2Value;
-	
+
 	private Chart2D heartRateChart;
 	private ITrace2D heartRateTrace;
 	private int heartRatePoint;
 	private JLabel heartRateValue;
-	
-	private Chart2D plethmographChart;
-	private ITrace2D plethmographTrace;
-	private int plethmographPoint;
-	
+
+	private Chart2D plethysmographChart;
+	private ITrace2D plethysmographTrace;
+	private int plethysmographPoint;
+
 	public PulseOxMonitorGui(DataFormatType dataFormat, String serialPortName) {
 		pulseOxMonitor = new Nonin9560PulseOxJssc(dataFormat, serialPortName, this);
-		
+
 		createModels();
 		setLayout(new BoxLayout(this, BoxLayout.PAGE_AXIS));
 		setBackground(Color.BLACK);
-		
+
 		JPanel panel = new JPanel();
 		panel.setLayout(new BoxLayout(panel, BoxLayout.LINE_AXIS));
 		panel.add(spo2Chart);
@@ -91,9 +102,9 @@ public class PulseOxMonitorGui extends JPanel implements PulseOxListenerInterfac
 		panel.setAlignmentX(Component.LEFT_ALIGNMENT);
 		panel.setBackground(Color.BLACK);
 		add(panel);
-		
+
 		add(Box.createRigidArea(new Dimension(0, 10)));
-		
+
 		panel = new JPanel();
 		panel.setLayout(new BoxLayout(panel, BoxLayout.LINE_AXIS));
 		panel.add(heartRateChart);
@@ -101,13 +112,13 @@ public class PulseOxMonitorGui extends JPanel implements PulseOxListenerInterfac
 		panel.setAlignmentX(Component.LEFT_ALIGNMENT);
 		panel.setBackground(Color.BLACK);
 		add(panel);
-		
+
 		add(Box.createRigidArea(new Dimension(0, 10)));
-		
-		plethmographChart.setAlignmentX(Component.LEFT_ALIGNMENT);
-		add(plethmographChart);
+
+		plethysmographChart.setAlignmentX(Component.LEFT_ALIGNMENT);
+		add(plethysmographChart);
 	}
-	
+
 	private void createModels() {
 		spo2Chart = new Chart2D();
 		spo2Chart.setUseAntialiasing(true);
@@ -122,13 +133,14 @@ public class PulseOxMonitorGui extends JPanel implements PulseOxListenerInterfac
 		spo2Value.setBackground(Color.BLACK);
 		spo2Value.setForeground(Color.CYAN);
 		spo2Value.setFont(spo2Value.getFont().deriveFont(50f));
-		
+
 		heartRateChart = new Chart2D();
 		heartRateChart.setUseAntialiasing(true);
 		heartRateChart.setBackground(Color.BLACK);
 		heartRateChart.setForeground(Color.GREEN);
 		heartRateChart.setGridColor(Color.RED);
-		//heartRateChart.getAxisY().setRangePolicy(new RangePolicyFixedViewport(new Range(0, 250)));
+		// heartRateChart.getAxisY().setRangePolicy(new RangePolicyFixedViewport(new
+		// Range(0, 250)));
 		heartRateTrace = new Trace2DLtd(1000, "Heart Rate");
 		heartRateTrace.setColor(Color.YELLOW);
 		heartRateChart.addTrace(heartRateTrace);
@@ -136,16 +148,18 @@ public class PulseOxMonitorGui extends JPanel implements PulseOxListenerInterfac
 		heartRateValue.setBackground(Color.BLACK);
 		heartRateValue.setForeground(Color.YELLOW);
 		heartRateValue.setFont(heartRateValue.getFont().deriveFont(50f));
-		
-		plethmographChart = new Chart2D();
-		plethmographChart.setUseAntialiasing(true);
-		plethmographChart.setBackground(Color.BLACK);
-		plethmographChart.setForeground(Color.GREEN);
-		plethmographChart.setGridColor(Color.RED);
-		//plethmographChart.getAxisY().setRangePolicy(new RangePolicyFixedViewport(new Range(0, 256)));
-		plethmographTrace = new Trace2DLtd(1000, "Plethmograph");
-		plethmographTrace.setColor(Color.GREEN.brighter().brighter());
-		plethmographChart.addTrace(plethmographTrace);
+
+		plethysmographChart = new Chart2D();
+		plethysmographChart.setUseAntialiasing(true);
+		plethysmographChart.setBackground(Color.BLACK);
+		plethysmographChart.setForeground(Color.GREEN);
+		plethysmographChart.setGridColor(Color.RED);
+		// plethysmographChart.getAxisY().setRangePolicy(new
+		// RangePolicyFixedViewport(new
+		// Range(0, 256)));
+		plethysmographTrace = new Trace2DLtd(1000, "plethysmograph");
+		plethysmographTrace.setColor(Color.GREEN.brighter().brighter());
+		plethysmographChart.addTrace(plethysmographTrace);
 	}
 
 	public void start() {
@@ -157,27 +171,21 @@ public class PulseOxMonitorGui extends JPanel implements PulseOxListenerInterfac
 				}
 			}
 		}));
-		
+
 		pulseOxMonitor.start();
-		
+
 		try {
 			int count = 0;
 			while (pulseOxMonitor.isConnected()) {
 				Thread.sleep(1000);
-				
+
 				if (pulseOxMonitor.isClearToSend()) {
 					switch (count++) {
 					/*
-					case 0:
-						pulseOxInterface.sendMessage(new NoninGetTimeRequest());
-						break;
-					case 1:
-						pulseOxInterface.sendMessage(new NoninSetTimeRequest());
-						break;
-					case 2:
-						pulseOxInterface.sendMessage(new NoninGetTimeRequest());
-						break;
-					*/
+					 * case 0: pulseOxInterface.sendMessage(new NoninGetTimeRequest()); break; case
+					 * 1: pulseOxInterface.sendMessage(new NoninSetTimeRequest()); break; case 2:
+					 * pulseOxInterface.sendMessage(new NoninGetTimeRequest()); break;
+					 */
 					case 300:
 						logger.info("Reached count max, shutting down");
 						pulseOxMonitor.stop();
@@ -199,16 +207,16 @@ public class PulseOxMonitorGui extends JPanel implements PulseOxListenerInterfac
 	@Override
 	public void messageReceived(NoninResponseInterface response) {
 		if (response instanceof DataFormat2Frame) {
-			DataFormat2Frame frame = (DataFormat2Frame)response;
-			plethmographTrace.addPoint(plethmographPoint++, frame.getPlethmograph());
+			DataFormat2Frame frame = (DataFormat2Frame) response;
+			plethysmographTrace.addPoint(plethysmographPoint++, frame.getPlethysmograph());
 		} else if (response instanceof DataFormat2Packet) {
-			DataFormat2Packet packet = (DataFormat2Packet)response;
+			DataFormat2Packet packet = (DataFormat2Packet) response;
 			heartRateTrace.addPoint(heartRatePoint++, packet.getHeartRateDisplay());
 			heartRateValue.setText(Integer.toString(packet.getHeartRateDisplay()));
 			spo2Trace.addPoint(spo2Point++, packet.getSpO2Display());
 			spo2Value.setText(Integer.toString(packet.getSpO2Display()) + "%");
 		} else {
-			//logger.info("Got message: " + response);
+			// logger.info("Got message: " + response);
 		}
 	}
 }

@@ -4,20 +4,19 @@ public class DataFormat2Frame implements NoninResponseInterface {
 	private boolean artifact;
 	private boolean outOfTrack;
 	private boolean sensorAlarm;
-	private PerfusionType perfusion; 
+	private PerfusionType perfusion;
 	private boolean sync;
-	private short plethmograph;
+	private short plethysmograph;
 	private short value;
 
-	public DataFormat2Frame(boolean artifact, boolean outOfTrack,
-			boolean sensorAlarm, PerfusionType perfusion, boolean sync,
-			short plethmograph, short value) {
+	public DataFormat2Frame(boolean artifact, boolean outOfTrack, boolean sensorAlarm, PerfusionType perfusion,
+			boolean sync, short plethysmograph, short value) {
 		this.artifact = artifact;
 		this.outOfTrack = outOfTrack;
 		this.sensorAlarm = sensorAlarm;
 		this.perfusion = perfusion;
 		this.sync = sync;
-		this.plethmograph = plethmograph;
+		this.plethysmograph = plethysmograph;
 		this.value = value;
 	}
 
@@ -41,8 +40,8 @@ public class DataFormat2Frame implements NoninResponseInterface {
 		return sync;
 	}
 
-	public short getPlethmograph() {
-		return plethmograph;
+	public short getPlethysmograph() {
+		return plethysmograph;
 	}
 
 	public short getValue() {
@@ -51,9 +50,8 @@ public class DataFormat2Frame implements NoninResponseInterface {
 
 	@Override
 	public String toString() {
-		return "DataFormat2Frame [artifact=" + artifact + ", outOfTrack="
-				+ outOfTrack + ", sensorAlarm=" + sensorAlarm + ", perfusion="
-				+ perfusion + ", sync=" + sync + ", plethmograph=" + plethmograph
-				+ ", value=" + value + "]";
+		return "DataFormat2Frame [artifact=" + artifact + ", outOfTrack=" + outOfTrack + ", sensorAlarm=" + sensorAlarm
+				+ ", perfusion=" + perfusion + ", sync=" + sync + ", plethysmograph=" + plethysmograph + ", value="
+				+ value + "]";
 	}
 }

@@ -11,9 +11,9 @@ public class DataFormat2PacketSerialiser {
 		if (frames.length != FRAME_COUNT) {
 			return null;
 		}
-		
-		short[] plethmograph_values = new short[FRAME_COUNT];
-		
+
+		short[] plethysmograph_values = new short[FRAME_COUNT];
+
 		short hr_msb = 0;
 		short hr_lsb = 0;
 		short spo2 = 0;
@@ -42,19 +42,19 @@ public class DataFormat2PacketSerialiser {
 		short reserved6 = 0;
 		short reserved7 = 0;
 
-		for (int frame_count=0; frame_count<FRAME_COUNT; frame_count++) {
-			plethmograph_values[frame_count] = frames[frame_count].getPlethmograph();
-			
+		for (int frame_count = 0; frame_count < FRAME_COUNT; frame_count++) {
+			plethysmograph_values[frame_count] = frames[frame_count].getPlethysmograph();
+
 			short val_byte = frames[frame_count].getValue();
 			switch (frame_count) {
 			case 0:
-				hr_msb = (short)(val_byte & 0x03);
+				hr_msb = (short) (val_byte & 0x03);
 				break;
 			case 1:
-				hr_lsb = (short)(val_byte & 0x7f);
+				hr_lsb = (short) (val_byte & 0x7f);
 				break;
 			case 2:
-				spo2 = (short)(val_byte & 0x7f);
+				spo2 = (short) (val_byte & 0x7f);
 				break;
 			case 3:
 				software_revision = val_byte;
@@ -63,10 +63,10 @@ public class DataFormat2PacketSerialiser {
 				reserved1 = val_byte;
 				break;
 			case 5:
-				timer_msb = (short)(val_byte & 0x7f);
+				timer_msb = (short) (val_byte & 0x7f);
 				break;
 			case 6:
-				timer_lsb = (short)(val_byte & 0x7f);
+				timer_lsb = (short) (val_byte & 0x7f);
 				break;
 			case 7:
 				status2 = val_byte;
@@ -89,10 +89,10 @@ public class DataFormat2PacketSerialiser {
 				reserved3 = val_byte;
 				break;
 			case 13:
-				ehr_msb = (short)(val_byte & 0x03);
+				ehr_msb = (short) (val_byte & 0x03);
 				break;
 			case 14:
-				ehr_lsb = (short)(val_byte & 0x7f);
+				ehr_lsb = (short) (val_byte & 0x7f);
 				break;
 			case 15:
 				e_spo2 = val_byte;
@@ -107,16 +107,16 @@ public class DataFormat2PacketSerialiser {
 				reserved5 = val_byte;
 				break;
 			case 19:
-				hrd_msb = (short)(val_byte & 0x03);
+				hrd_msb = (short) (val_byte & 0x03);
 				break;
 			case 20:
-				hrd_lsb = (short)(val_byte & 0x7f);
+				hrd_lsb = (short) (val_byte & 0x7f);
 				break;
 			case 21:
-				ehrd_msb = (short)(val_byte & 0x03);
+				ehrd_msb = (short) (val_byte & 0x03);
 				break;
 			case 22:
-				ehrd_lsb = (short)(val_byte & 0x7f);
+				ehrd_lsb = (short) (val_byte & 0x7f);
 				break;
 			case 23:
 				reserved6 = val_byte;
@@ -126,22 +126,20 @@ public class DataFormat2PacketSerialiser {
 				break;
 			}
 		}
-		
-		return new DataFormat2Packet(plethmograph_values, readInt(hr_msb, hr_lsb),
-				spo2, software_revision, reserved1, readInt(timer_msb, timer_lsb),
-				smart_point_algorithm, low_battery, spo2_d, spo2_fast, spo2_bb,
-				reserved2, reserved3, readInt(ehr_msb, ehr_lsb), e_spo2, e_spo2_d,
-				reserved4, reserved5, readInt(hrd_msb, hrd_lsb),
-				readInt(ehrd_msb, ehrd_lsb), reserved6, reserved7);
+
+		return new DataFormat2Packet(plethysmograph_values, readInt(hr_msb, hr_lsb), spo2, software_revision, reserved1,
+				readInt(timer_msb, timer_lsb), smart_point_algorithm, low_battery, spo2_d, spo2_fast, spo2_bb,
+				reserved2, reserved3, readInt(ehr_msb, ehr_lsb), e_spo2, e_spo2_d, reserved4, reserved5,
+				readInt(hrd_msb, hrd_lsb), readInt(ehrd_msb, ehrd_lsb), reserved6, reserved7);
 	}
-	
+
 	/** Even though the data is transmitted in 8 bit bytes, only 7 bits are used */
 	private static int readInt(short msb, short lsb) {
 		if ((msb & 0x01) != 0) {
 			lsb |= 0x80;
 		}
 		msb >>= 1;
-		
+
 		return IOUtil.toInt(msb, lsb);
 	}
 }

@@ -3,7 +3,7 @@ package com.diozero.pulseox.nonin.data;
 import java.util.Arrays;
 
 public class DataFormat2Packet implements NoninResponseInterface {
-	private short[] plethmographValues;
+	private short[] plethysmographValues;
 	private int heartRate;
 	private short spO2;
 	private short softwareRevision;
@@ -25,14 +25,13 @@ public class DataFormat2Packet implements NoninResponseInterface {
 	private int extendedHeartRateDisplay;
 	private short reserved6;
 	private short reserved7;
-	
-	public DataFormat2Packet(short[] plethmographValues, int heartRate, short spO2,
-			short softwareRevision, short reserved1, int timer, boolean smartPointAlgorithm,
-			boolean lowBattery, short spO2Display, short spO2FastAverage, short spO2BeatToBeat,
-			short reserved2, short reserved3, int extendedHeartRateAverage,
+
+	public DataFormat2Packet(short[] plethysmographValues, int heartRate, short spO2, short softwareRevision,
+			short reserved1, int timer, boolean smartPointAlgorithm, boolean lowBattery, short spO2Display,
+			short spO2FastAverage, short spO2BeatToBeat, short reserved2, short reserved3, int extendedHeartRateAverage,
 			short extendedSpO2Average, short extendedSpO2Display, short reserved4, short reserved5,
 			int heartRateDisplay, int extendedHeartRateDisplay, short reserved6, short reserved7) {
-		this.plethmographValues = plethmographValues;
+		this.plethysmographValues = plethysmographValues;
 		this.heartRate = heartRate;
 		this.spO2 = spO2;
 		this.softwareRevision = softwareRevision;
@@ -56,8 +55,8 @@ public class DataFormat2Packet implements NoninResponseInterface {
 		this.reserved7 = reserved7;
 	}
 
-	public short[] getPlethmographValues() {
-		return plethmographValues;
+	public short[] getPlethysmographValues() {
+		return plethysmographValues;
 	}
 
 	public int getHeartRate() {
@@ -146,21 +145,14 @@ public class DataFormat2Packet implements NoninResponseInterface {
 
 	@Override
 	public String toString() {
-		return "DataFormat2Packet [plethmographValues="
-				+ Arrays.toString(plethmographValues) + ", heartRate="
-				+ heartRate + ", spO2=" + spO2 + ", softwareRevision="
-				+ softwareRevision + ", reserved1=" + reserved1 + ", timer="
-				+ timer + ", smartPointAlgorithm=" + smartPointAlgorithm
-				+ ", lowBattery=" + lowBattery + ", spO2Display=" + spO2Display
-				+ ", spO2FastAverage=" + spO2FastAverage + ", spO2BeatToBeat="
-				+ spO2BeatToBeat + ", reserved2=" + reserved2 + ", reserved3="
-				+ reserved3 + ", extendedHeartRateAverage="
-				+ extendedHeartRateAverage + ", extendedSpO2Average="
-				+ extendedSpO2Average + ", extendedSpO2Display="
-				+ extendedSpO2Display + ", reserved4=" + reserved4
-				+ ", reserved5=" + reserved5 + ", heartRateDisplay="
-				+ heartRateDisplay + ", extendedHeartRateDisplay="
-				+ extendedHeartRateDisplay + ", reserved6=" + reserved6
-				+ ", reserved7=" + reserved7 + "]";
+		return "DataFormat2Packet [plethysmographValues=" + Arrays.toString(plethysmographValues) + ", heartRate="
+				+ heartRate + ", spO2=" + spO2 + ", softwareRevision=" + softwareRevision + ", reserved1=" + reserved1
+				+ ", timer=" + timer + ", smartPointAlgorithm=" + smartPointAlgorithm + ", lowBattery=" + lowBattery
+				+ ", spO2Display=" + spO2Display + ", spO2FastAverage=" + spO2FastAverage + ", spO2BeatToBeat="
+				+ spO2BeatToBeat + ", reserved2=" + reserved2 + ", reserved3=" + reserved3
+				+ ", extendedHeartRateAverage=" + extendedHeartRateAverage + ", extendedSpO2Average="
+				+ extendedSpO2Average + ", extendedSpO2Display=" + extendedSpO2Display + ", reserved4=" + reserved4
+				+ ", reserved5=" + reserved5 + ", heartRateDisplay=" + heartRateDisplay + ", extendedHeartRateDisplay="
+				+ extendedHeartRateDisplay + ", reserved6=" + reserved6 + ", reserved7=" + reserved7 + "]";
 	}
 }
